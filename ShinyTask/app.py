@@ -1,7 +1,7 @@
 import mimetypes
 from math import ceil
 from typing import List
-from shiny import App, render, ui
+from shiny import App, render, ui,reactive
 from shiny import *
 import os
 import uuid
@@ -73,7 +73,9 @@ app_ui = ui.page_fluid(
     ui.input_file(
         "file1", "Choose a file to upload:", accept="application/pdf", multiple=False
     ),
+
     ui.output_text_verbatim("file_content"),
+    ui.input_action_button("btn", "Submit",class_="btn-success"),
     ui.h3("Result Table:"),
     ui.output_text_verbatim("current_time1", placeholder=True),
     ui.h6(
@@ -88,8 +90,16 @@ app_ui = ui.page_fluid(
 
 
 def server(input, output, session):
+
+    @reactive.Effect
+    @reactive.event(input.btn)
+    def _():
+        print(f"You clicked the button!")
+        # You can do other things here, like write data to disk.
+
     @output
     @render.text
+    @reactive.event(input.btn)
     def file_content():
 
         # INPUT_DATE_TIME
@@ -124,6 +134,8 @@ def server(input, output, session):
     def current_time1():
         return "Current Server Time : " + str(datetime.now())
 
+
+
     @output
     @render.text
     def txt1():
@@ -155,7 +167,8 @@ def server(input, output, session):
                 all = all + d + "\n"
             return all
         except Exception as e:
-            return "Error in Reading Database", e
+            # print("Error in Reading Database", e)
+            return " There are no files in database"
 
 
 app = App(app_ui, server)
