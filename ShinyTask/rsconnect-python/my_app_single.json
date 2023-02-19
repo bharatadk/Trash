@@ -1,0 +1,11 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "D:\\flask\\my_app_single",
+        "app_url": "https://bharatadk.shinyapps.io/cron_job_single/",
+        "app_id": 8353806,
+        "app_guid": null,
+        "title": "result_app_none",
+        "app_mode": "python-shiny"
+    }
+}

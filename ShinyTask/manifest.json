@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "locale": "en_US.cp1252",
+  "metadata": {
+    "appmode": "python-shiny",
+    "entrypoint": "app"
+  },
+  "python": {
+    "version": "3.8.7",
+    "package_manager": {
+      "name": "pip",
+      "version": "20.2.3",
+      "package_file": "requirements.txt"
+    }
+  },
+  "files": {
+    "requirements.txt": {
+      "checksum": "c1c7f9bf2c7a5edd242440704ef5628d"
+    },
+    "app.py": {
+      "checksum": "ed599f467da7b7f11d70bee1947ebd51"
+    }
+  }
+}
