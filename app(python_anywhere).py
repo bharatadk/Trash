@@ -34,6 +34,8 @@ import socket
 import time
 import random
 from page_limiter import page_limiter
+import cv2
+import numpy as np
 
 app = Flask(__name__)
 
@@ -258,9 +260,22 @@ def dashboard():
 
         for f in files:
             extension = os.path.splitext(f.filename)[1]
+            # print("@@@@@@@@",f)
             if "pdf" not in extension.lower():
+                file_bytes = np.asarray(bytearray(f.read()), dtype=np.uint8)
+
+                # read image from numpy array
+                img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+
+                # img = cv2.imread(os.path.join("./images",f.filename), cv2.IMREAD_UNCHANGED)
+
+                # Convert the image to .png format
+                cv2.imwrite(f'{os.path.join("./images", f.filename.rsplit(".",1)[0]+".png")}', img)
+
                 f.filename = f.filename.replace(extension, '.png')
-            f.save(os.path.join("./images", f.filename))
+            else:
+                f.save(os.path.join("./images", f.filename))
             with open(os.path.join("./images", f.filename), "rb") as pdf_file:
                 app.config["TEMP_Imagecode"] = base64.b64encode(pdf_file.read()).decode(
                     "UTF"
