@@ -36,6 +36,9 @@ import random
 from page_limiter import page_limiter
 import cv2
 import numpy as np
+from task_model import save_task_to_database
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 app = Flask(__name__)
 app.config["IMAGES"] = "images"
@@ -481,9 +484,6 @@ def upload():
 #######################
     date = request.form.get("date")
     time = request.form.get("time")
-    print("⌚⌚",date,"\n",time,"\n")
-
-
     form = UploadFileForm()
     if request.method == "POST":
         files = form.file.data
@@ -519,6 +519,18 @@ def upload():
             )  # Then save the file
             extention = os.path.splitext(file.filename)[1]
             # print(os.path.splitext(file.filename)[0],extention)
+            db_extention="img"
+            if extention in [".pdf", ".PDF"]:
+                db_extention = "pdf"
+            filenames = []
+            for file in files:
+                filenames.append(file.filename)
+            print("filenames:",filenames)
+            task_id = save_task_to_database(date, time, filenames, db_extention)
+            filenames=[]
+
+            return redirect('/')
+
 
             if extention in [".pdf", ".PDF"]:
 
