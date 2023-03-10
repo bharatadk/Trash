@@ -34,6 +34,9 @@ import socket
 import time
 import random
 from page_limiter import page_limiter
+import cv2
+import numpy as np
+
 app = Flask(__name__)
 app.config["IMAGES"] = "images"
 app.config["LABELS"] = []
@@ -221,8 +224,16 @@ def dashboard():
         for f in files:
             extension = os.path.splitext(f.filename)[1]
             if "pdf" not in extension.lower():
+
+                file_bytes = np.asarray(bytearray(f.read()), dtype=np.uint8)
+                # read image from numpy array
+                img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                # img = cv2.imread(os.path.join("./images",f.filename), cv2.IMREAD_UNCHANGED)
+                # Convert the image to .png format
+                cv2.imwrite(f'{os.path.join("./images", f.filename.rsplit(".",1)[0]+".png")}', img)
                 f.filename = f.filename.replace(extension, '.png')
-            f.save(os.path.join("./images", f.filename))
+            else:
+                f.save(os.path.join("./images", f.filename))
             with open(os.path.join("./images", f.filename), "rb") as pdf_file:
                 app.config["TEMP_Imagecode"] = base64.b64encode(pdf_file.read()).decode(
                     "UTF"
@@ -467,6 +478,12 @@ def images(f):
 def upload():
     token = request.args.get("token")
     app.config["HEAD"] = 0
+#######################
+    date = request.form.get("date")
+    time = request.form.get("time")
+    print("⌚⌚",date,"\n",time,"\n")
+
+
     form = UploadFileForm()
     if request.method == "POST":
         files = form.file.data
@@ -733,4 +750,3 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True, port=3000)
-
